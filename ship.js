@@ -2,7 +2,7 @@ function newShip() {
     return {
         x: canv.width / 2,
         y: canv.height / 2,
-        a: 90 / 180 * Math.PI, // convert to radians
+        a: 90 / 180 * Math.PI,
         r: SHIP_SIZE / 2,
         blinkNum: Math.ceil(SHIP_INV_DUR / SHIP_BLINK_DUR),
         blinkTime: Math.ceil(SHIP_BLINK_DUR * FPS),
@@ -23,15 +23,15 @@ function drawShip(x, y, a, colour = "white") {
     ctx.strokeStyle = colour;
     ctx.lineWidth = SHIP_SIZE / 20;
     ctx.beginPath();
-    ctx.moveTo( // nose of the ship
+    ctx.moveTo( // нос
         x + 4 / 3 * ship.r * Math.cos(a),
         y - 4 / 3 * ship.r * Math.sin(a)
     );
-    ctx.lineTo( // rear left
+    ctx.lineTo( // левый тыл
         x - ship.r * (2 / 3 * Math.cos(a) + Math.sin(a)),
         y + ship.r * (2 / 3 * Math.sin(a) - Math.cos(a))
     );
-    ctx.lineTo( // rear right
+    ctx.lineTo( // правый тыл
         x - ship.r * (2 / 3 * Math.cos(a) - Math.sin(a)),
         y + ship.r * (2 / 3 * Math.sin(a) + Math.cos(a))
     );
@@ -59,7 +59,7 @@ function shipDeveloperTool() {
 
 function checkAsteroidCollisions(exploding) {
     if (!exploding) {
-        // only check when not blinking
+        // check iframe
         if (ship.blinkNum == 0 && !ship.dead) {
             for (var i = 0; i < roids.length; i++) {
                 if (distBetweenPoints(ship.x, ship.y, roids[i].x, roids[i].y) < ship.r + roids[i].r) {
@@ -69,15 +69,14 @@ function checkAsteroidCollisions(exploding) {
                 }
             }
         }
-        // rotate the ship
+        // поворот корабля
         ship.a += ship.rot;
-        // move the ship
+        // перемещение корабля
         ship.x += ship.thrust.x;
         ship.y += ship.thrust.y;
     } else {
-        // reduce the explode time
+        // время взрыва
         ship.explodeTime--;
-        // reset the ship after the explosion has finished
         if (ship.explodeTime == 0) {
             lives--;
             if (lives == 0) {
@@ -99,15 +98,15 @@ function thrustShip(exploding, blinkOn) {
             ctx.strokeStyle = "yellow";
             ctx.lineWidth = SHIP_SIZE / 10;
             ctx.beginPath();
-            ctx.moveTo( // rear left
+            ctx.moveTo( // левый тыл
                 ship.x - ship.r * (2 / 3 * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)),
                 ship.y + ship.r * (2 / 3 * Math.sin(ship.a) - 0.5 * Math.cos(ship.a))
             );
-            ctx.lineTo( // rear centre (behind the ship)
+            ctx.lineTo( // пик тыла
                 ship.x - ship.r * 5 / 3 * Math.cos(ship.a),
                 ship.y + ship.r * 5 / 3 * Math.sin(ship.a)
             );
-            ctx.lineTo( // rear right
+            ctx.lineTo( // правый тыл
                 ship.x - ship.r * (2 / 3 * Math.cos(ship.a) - 0.5 * Math.sin(ship.a)),
                 ship.y + ship.r * (2 / 3 * Math.sin(ship.a) + 0.5 * Math.cos(ship.a))
             );
@@ -116,7 +115,7 @@ function thrustShip(exploding, blinkOn) {
             ctx.stroke();
         }
     } else {
-        // apply friction (slow the ship down when not thrusting)
+        // трение
         ship.thrust.x -= FRICTION * ship.thrust.x / FPS;
         ship.thrust.y -= FRICTION * ship.thrust.y / FPS;
     }
@@ -127,20 +126,16 @@ function drawUpdateShip(exploding, blinkOn) {
             drawShip(ship.x, ship.y, ship.a);
         }
 
-        // handle blinking
+        // спрятать iframe
         if (ship.blinkNum > 0) {
-
-            // reduce the blink time
             ship.blinkTime--;
-
-            // reduce the blink num
             if (ship.blinkTime == 0) {
                 ship.blinkTime = Math.ceil(SHIP_BLINK_DUR * FPS);
                 ship.blinkNum--;
             }
         }
     } else {
-        // draw the explosion (concentric circles of different colours)
+        // взрыв
         ctx.fillStyle = "darkred";
         ctx.beginPath();
         ctx.arc(ship.x, ship.y, ship.r * 1.7, 0, Math.PI * 2, false);

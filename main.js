@@ -25,7 +25,7 @@
             score = 0;
             ship = newShip();
 
-            // get the high score from local storage
+            // лучший счёт из локального хранилища
             var scoreStr = localStorage.getItem(SAVE_KEY_SCORE);
             if (scoreStr == null) {
                 scoreHigh = 0;
